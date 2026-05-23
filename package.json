@@ -4,11 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"node server.js\" \"vite\"",
+    "dev": "concurrently \"python3 -m uvicorn backend.main:app --reload\" \"vite\"",
+    "frontend": "vite",
+    "backend": "python3 -m uvicorn backend.main:app --reload",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "node server.js"
+    "server": "python3 -m uvicorn backend.main:app --reload"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.0",
