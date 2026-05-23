@@ -45,7 +45,23 @@ const STATE_OPTIONS = [
 ];
 
 const QUESTION_FLOW = ['name', 'age', 'gender', 'state', 'occupation', 'monthly_income'];
-const WELCOME_INTERESTS = ['Pension', 'Health support', 'Education', 'Farming support', 'Housing', 'Employment'];
+const WELCOME_TOPICS = ['Pension', 'Health support', 'Education', 'Farming support', 'Housing', 'Employment'];
+const WELCOME_CHIPS = {
+  en: ['Pension', 'Health support', 'Education', 'Farming support', 'Housing', 'Employment'],
+  hi: ['पेंशन', 'स्वास्थ्य मदद', 'पढ़ाई की मदद', 'खेती की मदद', 'आवास मदद', 'रोज़गार मदद'],
+};
+const FAQ_QUICK_REPLIES = {
+  en: ['How do I apply?', 'Documents needed', 'Offline application', 'How much support?'],
+  hi: ['आवेदन कैसे करें?', 'कौन से कागज़ लगेंगे?', 'ऑफलाइन आवेदन होगा?', 'कितनी मदद मिलेगी?'],
+};
+const SCHEME_FAQ_KEYWORDS = {
+  apply: ['apply', 'application', 'kaise apply', 'kaise kare', 'आवेदन', 'apply kaise', 'कैसे apply'],
+  documents: ['documents', 'document', 'aadhaar', 'income proof', 'कागज़', 'दस्तावेज़', 'proof'],
+  money: ['money', 'kitna', 'amount', 'benefit', 'paisa', 'कितना', 'पैसा', 'रकम'],
+  office: ['office', 'where', 'kahan', 'center', 'branch', 'कार्यालय', 'कहाँ'],
+  eligibility: ['eligible', 'definitely', 'sure', 'pakka', 'योग्य', 'eligible hu', 'पक्का'],
+  offline: ['offline', 'online', 'counter', 'csc', 'bank', 'ऑफलाइन', 'ऑनलाइन'],
+};
 const DOCUMENT_TYPES = ['aadhaar', 'ration', 'income', 'disability', 'pension'];
 const LEGAL_KEYWORDS = [
   'legal',
@@ -186,6 +202,30 @@ const COPY = {
     legalAfter: 'I can also help you check relevant schemes in the same chat if you want.',
     askContinue:
       'You can also say things like “pension chahiye”, “farmer hu”, “no job”, “widow hu”, or “ghar nahi hai”.',
+    faqPrompt:
+      'If you want, I can also explain how to apply, what documents are needed, whether offline application is possible, or how much support this scheme may offer.',
+    stateFollowUp:
+      'If typing the full name is easier, that works too. I can understand most common state names and abbreviations.',
+    farmerFollowUp:
+      'Do you want me to keep farming support in special focus, especially land-linked or crop-related help?',
+    seniorFollowUp:
+      'Would you like me to focus on pension and older-person support first?',
+    housingFollowUp:
+      'If housing is a concern, I can keep home and shelter support in mind while checking schemes.',
+    faqAnswers: {
+      apply: (scheme) =>
+        `For ${scheme.name}, the safest next step is to use the official portal or ask at the local office or help center mentioned in the card. If you want, I can guide you scheme by scheme.`,
+      documents: (scheme) =>
+        `For ${scheme.name}, the usual documents are identity proof plus the scheme-specific papers shown in the card. If income proof is missing, it is still worth asking the local office what alternatives they accept.`,
+      money: (scheme, details) =>
+        `${scheme.name} mainly helps through this benefit: ${details.benefit}`,
+      office: (scheme) =>
+        `For ${scheme.name}, the local office depends on the scheme type. It is usually the block office, panchayat office, bank, post office, hospital help desk, or department portal listed on the official link.`,
+      eligibility: () =>
+        `I can only estimate likely eligibility from the information you shared. Final approval always depends on the official rules and documents checked by the scheme authority.`,
+      offline: (scheme) =>
+        `For ${scheme.name}, many people still apply through a local office, bank, panchayat, CSC center, school, or help desk even when an official website also exists.`,
+    },
     minorNote: 'I will keep child and student-related support in mind too.',
     seniorNote: 'I will keep senior citizen support in mind too.',
     documentPrompt:
@@ -223,7 +263,7 @@ const COPY = {
       'आप चाहें तो सीधे अपनी ज़रूरत लिख सकते हैं, या मैं कुछ आसान सवाल पूछकर आपको धीरे-धीरे गाइड कर दूँगा।',
     askName: 'मैं आपको किस नाम से बुलाऊँ?',
     askAge: 'आपकी उम्र कितनी है?',
-    askGender: 'कृपया अपना gender बताइए।',
+    askGender: 'कृपया अपना लिंग बताइए।',
     askState: 'आप किस राज्य या केंद्र शासित प्रदेश में रहते हैं?',
     askOccupation:
       'आप क्या काम करते हैं? जैसे किसान, शिक्षक, ड्राइवर, दुकानदार, गृहिणी, मजदूर, छात्र या इससे मिलता-जुलता कुछ।',
@@ -242,7 +282,7 @@ const COPY = {
     voiceUnsupported: 'इस browser में voice input support नहीं है.',
     voiceHeard: 'मैंने सुना',
     voiceReady: 'अब मैं सुन रहा हूँ। आप हिंदी, English, या Hinglish में आराम से बोलिए।',
-    languageNotice: 'भाषा बदल गई है। आप हिंदी, English, या Hinglish में जवाब दे सकते हैं।',
+    languageNotice: 'भाषा बदल गई है। आप हिंदी या Hinglish में आराम से जवाब दे सकते हैं।',
     typing: 'साथी लिख रहा है...',
     activityScheme: 'संभावित योजनाएँ देख रहा हूँ...',
     activityLegal: 'कानूनी मदद देख रहा हूँ...',
@@ -260,7 +300,31 @@ const COPY = {
     profileRefresh: 'इस नई जानकारी के साथ मैं फिर से देखता हूँ।',
     legalAfter: 'अगर चाहें तो इसी चैट में मैं आपके लिए योजनाएँ भी देख सकता हूँ।',
     askContinue:
-      'आप ऐसे भी लिख सकते हैं: “मुझे पेंशन चाहिए”, “मैं किसान हूं”, “no job”, “widow hu”, या “घर नहीं है”.',
+      'आप ऐसे भी लिख सकते हैं: “मुझे पेंशन चाहिए”, “मैं किसान हूँ”, “मेरे पास काम नहीं है”, “मैं विधवा हूँ”, या “घर नहीं है”.',
+    faqPrompt:
+      'अगर चाहें तो मैं यह भी बता सकता हूँ कि आवेदन कैसे करना है, कौन-कौन से कागज़ लग सकते हैं, ऑफलाइन आवेदन हो सकता है या नहीं, और योजना से क्या मदद मिलेगी।',
+    stateFollowUp:
+      'अगर पूरा नाम लिखना आसान हो, तो वह भी ठीक है। मैं ज़्यादातर आम state names और short forms समझ लेता हूँ।',
+    farmerFollowUp:
+      'क्या आप चाहते हैं कि मैं खेती से जुड़ी मदद, जैसे जमीन या फसल से जुड़ी योजनाएँ, खास तौर पर ध्यान में रखूँ?',
+    seniorFollowUp:
+      'क्या मैं pension और बुज़ुर्गों वाली मदद को पहले ध्यान में रखूँ?',
+    housingFollowUp:
+      'अगर घर की चिंता है, तो मैं आवास और shelter वाली मदद को भी ध्यान में रखूँगा।',
+    faqAnswers: {
+      apply: (scheme) =>
+        `${scheme.name} के लिए सबसे सुरक्षित अगला कदम यही है कि आप official link देखें या card में बताए गए local office या help center से बात करें। चाहें तो मैं एक-एक scheme समझा सकता हूँ।`,
+      documents: (scheme) =>
+        `${scheme.name} में आम तौर पर पहचान पत्र और card में दिखाए गए scheme-specific कागज़ काम आते हैं। अगर income proof नहीं है, तब भी local office से alternative documents पूछना ठीक रहेगा।`,
+      money: (scheme, details) =>
+        `${scheme.name} में मुख्य मदद यह है: ${details.benefit}`,
+      office: (scheme) =>
+        `${scheme.name} के लिए local office scheme पर निर्भर करता है। अक्सर block office, panchayat, bank, post office, hospital help desk, या department portal काम आता है।`,
+      eligibility: () =>
+        `मैं आपकी दी हुई जानकारी के आधार पर सिर्फ संभावना बता सकता हूँ। अंतिम eligibility official rules और documents देखकर ही तय होती है।`,
+      offline: (scheme) =>
+        `${scheme.name} में कई जगह online link होने के बाद भी local office, bank, panchayat, CSC center, school, या help desk से काम हो जाता है।`,
+    },
     minorNote: 'मैं बच्चों और पढ़ाई से जुड़ी मदद भी ध्यान में रखूँगा।',
     seniorNote: 'मैं बुज़ुर्गों वाली मदद भी ध्यान में रखूँगा।',
     documentPrompt:
@@ -268,7 +332,7 @@ const COPY = {
     documentSaved: 'मुझे आपका document मिल गया।',
     documentAcknowledge:
       'इस demo में मैं हर document को पूरा पढ़ नहीं पाता, लेकिन आपने जो भेजा है उसे याद रखकर बेहतर guidance दे सकता हूँ।',
-    stateHelp: 'आप अपना राज्य लिख सकते हैं, या नीचे से चुन सकते हैं।',
+    stateHelp: 'आप अपना राज्य लिख सकते हैं, या नीचे दिए गए सुझावों में से चुन सकते हैं।',
     documentTypes: {
       aadhaar: 'आधार कार्ड',
       ration: 'राशन कार्ड',
@@ -552,6 +616,17 @@ function UploadBubble({ message }) {
   );
 }
 
+function AssistantBadge({ large = false }) {
+  return (
+    <span className={`assistant-badge ${large ? 'large' : ''}`} aria-hidden="true">
+      <svg viewBox="0 0 24 24" className="assistant-mark">
+        <circle cx="12" cy="9" r="4" />
+        <path d="M5 20c1.8-3.7 4.4-5.5 7-5.5s5.2 1.8 7 5.5" />
+      </svg>
+    </span>
+  );
+}
+
 function MessageBubble({ message, previousSender, profileName }) {
   const isUser = message.sender === 'user';
   const grouped = previousSender === message.sender;
@@ -560,7 +635,9 @@ function MessageBubble({ message, previousSender, profileName }) {
   return (
     <div className={`message-row ${isUser ? 'user' : 'assistant'} ${grouped ? 'grouped' : ''}`}>
       {!grouped ? (
-        <div className={`avatar ${isUser ? 'user' : 'assistant'}`}>{isUser ? userInitial : 'JS'}</div>
+        <div className={`avatar ${isUser ? 'user' : 'assistant'}`}>
+          {isUser ? userInitial : <AssistantBadge />}
+        </div>
       ) : (
         <div className="avatar-spacer" />
       )}
@@ -600,6 +677,12 @@ function MessageBubble({ message, previousSender, profileName }) {
   );
 }
 
+function getLocalizedQuickReplies(language, type) {
+  if (type === 'faq') return FAQ_QUICK_REPLIES[language];
+  if (type === 'welcome') return WELCOME_CHIPS[language];
+  return [];
+}
+
 export default function App() {
   const [language, setLanguage] = useState('en');
   const [messages, setMessages] = useState(() => [
@@ -618,12 +701,13 @@ export default function App() {
     monthly_income: null,
   });
   const [pendingField, setPendingField] = useState('name');
-  const [quickReplies, setQuickReplies] = useState([...WELCOME_INTERESTS, ...FIELD_QUICK_REPLIES.name]);
+  const [quickReplies, setQuickReplies] = useState([...WELCOME_CHIPS.en, ...FIELD_QUICK_REPLIES.name]);
   const [isTyping, setIsTyping] = useState(false);
   const [typingLabel, setTypingLabel] = useState(COPY.en.typing);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasShownResults, setHasShownResults] = useState(false);
   const [uploadedDocs, setUploadedDocs] = useState([]);
+  const [lastShownSchemes, setLastShownSchemes] = useState([]);
   const [isListening, setIsListening] = useState(false);
   const [listeningSupported] = useState(() =>
     Boolean(globalThis.SpeechRecognition || globalThis.webkitSpeechRecognition),
@@ -678,7 +762,7 @@ export default function App() {
       setQuickReplies(suggestions.length ? suggestions : FIELD_QUICK_REPLIES.state);
       return;
     }
-    setQuickReplies([...(field === 'name' ? WELCOME_INTERESTS : []), ...(FIELD_QUICK_REPLIES[field] || [])]);
+    setQuickReplies([...(field === 'name' ? WELCOME_CHIPS[language] : []), ...(FIELD_QUICK_REPLIES[field] || [])]);
   }
 
   function setActivityLabel(type) {
@@ -733,6 +817,7 @@ export default function App() {
       if (!schemes.length) {
         pushMessage(createTextMessage('assistant', copy.schemeNone));
       } else {
+        setLastShownSchemes(schemes);
         pushMessage(
           createTextMessage('assistant', copy.schemeLead, {
             type: 'schemes',
@@ -754,8 +839,12 @@ export default function App() {
 
       await delay(180);
       pushMessage(createTextMessage('assistant', copy.askAgain));
+      if (schemes.length) {
+        await delay(150);
+        pushMessage(createTextMessage('assistant', copy.faqPrompt));
+      }
       setHasShownResults(true);
-      setQuickReplies(WELCOME_INTERESTS);
+      setQuickReplies(getLocalizedQuickReplies(nextLanguage, 'faq'));
     } catch {
       pushMessage(createTextMessage('assistant', copy.schemeFallback));
     } finally {
@@ -811,7 +900,7 @@ export default function App() {
       } else if (!hasShownResults && !getNextField(profile)) {
         await requestSchemeResults(profile, nextLanguage);
       } else {
-        setQuickReplies(WELCOME_INTERESTS);
+        setQuickReplies(getLocalizedQuickReplies(nextLanguage, 'welcome'));
       }
     } catch {
       pushMessage(createTextMessage('assistant', copy.legalFallback));
@@ -855,7 +944,16 @@ export default function App() {
     if (pendingField === 'age') {
       await delay(120);
       if (parsed < 18) pushMessage(createTextMessage('assistant', copy.minorNote));
-      else if (parsed >= 60) pushMessage(createTextMessage('assistant', copy.seniorNote));
+      else if (parsed >= 60) {
+        pushMessage(createTextMessage('assistant', copy.seniorNote));
+        await delay(120);
+        pushMessage(createTextMessage('assistant', copy.seniorFollowUp));
+      }
+    }
+
+    if (pendingField === 'occupation' && parsed === 'Farmer') {
+      await delay(120);
+      pushMessage(createTextMessage('assistant', copy.farmerFollowUp));
     }
 
     const nextField = getNextField(nextProfile);
@@ -863,6 +961,10 @@ export default function App() {
       setPendingField(nextField);
       await delay(220);
       pushMessage(createTextMessage('assistant', getQuestion(nextField, language, nextProfile)));
+      if (nextField === 'state') {
+        await delay(120);
+        pushMessage(createTextMessage('assistant', copy.stateHelp));
+      }
       setRepliesForField(nextField);
       return;
     }
@@ -875,15 +977,44 @@ export default function App() {
 
   async function handleFreeformMessage(text, options = {}) {
     const copy = COPY[language];
+    const normalized = normalizeForSearch(text);
 
-    if (WELCOME_INTERESTS.includes(text)) {
-      pushMessage(createTextMessage('assistant', copy.purposeReply[text]));
+    if (lastShownSchemes.length > 0) {
+      const primaryScheme = lastShownSchemes[0];
+      const details = primaryScheme
+        ? {
+            benefit:
+              primaryScheme.description ||
+              (language === 'hi'
+                ? 'यह योजना आपकी परिस्थिति के हिसाब से मदद दे सकती है।'
+                : 'This scheme may support your current situation.'),
+          }
+        : null;
+
+      for (const [faqKey, keywords] of Object.entries(SCHEME_FAQ_KEYWORDS)) {
+        if (keywords.some((keyword) => normalized.includes(normalizeForSearch(keyword)))) {
+          const answer = copy.faqAnswers[faqKey]?.(primaryScheme, details);
+          if (answer) {
+            pushMessage(createTextMessage('assistant', answer));
+            await delay(140);
+            pushMessage(createTextMessage('assistant', copy.askAgain));
+            setQuickReplies(getLocalizedQuickReplies(language, 'faq'));
+            return;
+          }
+        }
+      }
+    }
+
+    const topicIndex = WELCOME_CHIPS[language].indexOf(text);
+    if (topicIndex >= 0) {
+      const canonicalTopic = WELCOME_TOPICS[topicIndex];
+      pushMessage(createTextMessage('assistant', copy.purposeReply[canonicalTopic]));
       if (pendingField) {
         await delay(180);
         pushMessage(createTextMessage('assistant', getQuestion(pendingField, language, profile)));
         setRepliesForField(pendingField);
       } else {
-        setQuickReplies(WELCOME_INTERESTS);
+        setQuickReplies(getLocalizedQuickReplies(language, 'welcome'));
       }
       return;
     }
@@ -908,17 +1039,19 @@ export default function App() {
 
     if (
       ['housing', 'ghar', 'house', 'घर नहीं', 'घर'].some((keyword) =>
-        normalizeForSearch(text).includes(normalizeForSearch(keyword)),
+        normalized.includes(normalizeForSearch(keyword)),
       )
     ) {
       pushMessage(createTextMessage('assistant', copy.purposeReply.Housing));
+      await delay(140);
+      pushMessage(createTextMessage('assistant', copy.housingFollowUp));
       await requestSchemeResults(profile, language);
       return;
     }
 
     if (
       ['pension', 'पेंशन', 'widow', 'vidhwa', 'विधवा'].some((keyword) =>
-        normalizeForSearch(text).includes(normalizeForSearch(keyword)),
+        normalized.includes(normalizeForSearch(keyword)),
       )
     ) {
       pushMessage(createTextMessage('assistant', copy.purposeReply.Pension));
@@ -926,13 +1059,13 @@ export default function App() {
       return;
     }
 
-    if (normalizeForSearch(text).includes('scheme') || normalizeForSearch(text).includes('yojana')) {
+    if (normalized.includes('scheme') || normalized.includes('yojana')) {
       await requestSchemeResults(profile, language);
       return;
     }
 
     pushMessage(createTextMessage('assistant', copy.askContinue));
-    setQuickReplies(WELCOME_INTERESTS);
+    setQuickReplies(getLocalizedQuickReplies(language, 'welcome'));
   }
 
   async function handleUpload(file) {
@@ -962,7 +1095,7 @@ export default function App() {
     pushMessage(createTextMessage('assistant', COPY[language].documentAcknowledge));
     setIsTyping(false);
     setTypingLabel(COPY[language].typing);
-    setQuickReplies(WELCOME_INTERESTS);
+    setQuickReplies(getLocalizedQuickReplies(language, 'welcome'));
   }
 
   function stopVoice() {
@@ -1044,7 +1177,7 @@ export default function App() {
       ),
     );
 
-    if (WELCOME_INTERESTS.includes(text)) {
+    if (WELCOME_CHIPS[language].includes(text)) {
       await handleFreeformMessage(text, options);
       return;
     }
@@ -1066,7 +1199,9 @@ export default function App() {
     <div className="app-shell">
       <header className="chat-header">
         <div className="header-main">
-          <div className="header-avatar">JS</div>
+          <div className="header-avatar">
+            <AssistantBadge large />
+          </div>
           <div className="header-copy">
             <h1>{COPY[language].appName}</h1>
             <div className="status-row">
@@ -1164,7 +1299,7 @@ export default function App() {
             onClick={toggleVoiceInput}
             disabled={!listeningSupported && isListening}
           >
-            {isListening ? '●' : 'Mic'}
+            <span className="mic-core" />
           </button>
 
           <button type="submit" disabled={isSubmitting} className="send-btn">

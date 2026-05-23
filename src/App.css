@@ -2,7 +2,7 @@
   min-height: var(--visual-height, 100vh);
   display: flex;
   flex-direction: column;
-  padding: max(8px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom));
+  padding: max(6px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom));
   color: #1f2f2c;
 }
 
@@ -34,6 +34,28 @@
   border-radius: 16px;
   font-weight: 800;
   letter-spacing: 0.04em;
+}
+
+.assistant-badge {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+}
+
+.assistant-badge.large {
+  width: 28px;
+  height: 28px;
+}
+
+.assistant-mark {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .header-avatar {
@@ -130,7 +152,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 14px 10px 18px;
+  padding: 12px 9px 14px;
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.32)),
     radial-gradient(circle at 1px 1px, rgba(16, 94, 84, 0.04) 1px, transparent 0),
@@ -143,7 +165,7 @@
   display: flex;
   align-items: flex-end;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .message-row.user {
@@ -171,9 +193,9 @@
 }
 
 .bubble {
-  max-width: min(86%, 680px);
-  padding: 12px 14px 10px;
-  border-radius: 20px;
+  max-width: min(84%, 680px);
+  padding: 10px 12px 8px;
+  border-radius: 18px;
   box-shadow: 0 10px 24px rgba(23, 49, 43, 0.07);
   animation: bubbleIn 180ms ease-out;
 }
@@ -190,8 +212,8 @@
 
 .message-text {
   margin: 0;
-  font-size: 0.96rem;
-  line-height: 1.55;
+  font-size: 0.92rem;
+  line-height: 1.48;
   white-space: pre-wrap;
 }
 
@@ -289,7 +311,7 @@
 }
 
 .quick-label {
-  padding: 10px 10px 2px;
+  padding: 8px 10px 2px;
   color: #64867f;
   font-size: 0.74rem;
   font-weight: 700;
@@ -301,13 +323,13 @@
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 0 10px 6px;
+  padding: 0 10px 5px;
   background: rgba(248, 255, 252, 0.96);
 }
 
 .quick-reply {
   flex: 0 0 auto;
-  padding: 10px 14px;
+  padding: 9px 12px;
   border: 1px solid rgba(14, 93, 83, 0.12);
   border-radius: 999px;
   background: #fff;
@@ -323,7 +345,7 @@
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 0 10px 8px;
+  padding: 0 10px 6px;
 }
 
 .upload-memory-chip {
@@ -340,7 +362,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px 6px;
+  padding: 8px 10px 4px;
   background: rgba(248, 255, 252, 0.96);
 }
 
@@ -379,23 +401,23 @@
   grid-template-columns: auto minmax(0, 1fr) auto auto;
   gap: 8px;
   align-items: end;
-  padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
+  padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
   background: rgba(248, 255, 252, 0.98);
   border-top: 1px solid rgba(14, 93, 83, 0.08);
   backdrop-filter: blur(10px);
 }
 
 .composer textarea {
-  min-height: 46px;
-  max-height: 120px;
+  min-height: 42px;
+  max-height: 96px;
   resize: none;
   border: 1px solid rgba(14, 93, 83, 0.12);
-  border-radius: 18px;
-  padding: 14px 16px;
+  border-radius: 16px;
+  padding: 11px 13px;
   background: #fff;
   color: #17312b;
   font: inherit;
-  line-height: 1.4;
+  line-height: 1.3;
   box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.02);
 }
 
@@ -406,20 +428,53 @@
 
 .icon-btn,
 .send-btn {
-  height: 48px;
+  height: 42px;
   border: 0;
-  border-radius: 16px;
+  border-radius: 14px;
   font: inherit;
   font-weight: 800;
   cursor: pointer;
 }
 
 .icon-btn {
-  width: 44px;
-  min-width: 44px;
+  width: 40px;
+  min-width: 40px;
   background: #edf8f3;
   color: #0f6e61;
   box-shadow: 0 10px 18px rgba(23, 49, 43, 0.06);
+}
+
+.mic-core {
+  display: inline-block;
+  width: 10px;
+  height: 14px;
+  border-radius: 999px 999px 8px 8px;
+  background: currentColor;
+  position: relative;
+}
+
+.mic-core::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  width: 12px;
+  height: 6px;
+  border: 2px solid currentColor;
+  border-top: 0;
+  border-radius: 0 0 999px 999px;
+  transform: translateX(-50%);
+}
+
+.mic-core::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+  width: 2px;
+  height: 5px;
+  background: currentColor;
+  transform: translateX(-50%);
 }
 
 .icon-btn.mic.active {
@@ -429,7 +484,7 @@
 }
 
 .send-btn {
-  min-width: 74px;
+  min-width: 64px;
   background: linear-gradient(135deg, #0e5d53, #1d776a);
   color: white;
   box-shadow: 0 14px 24px rgba(18, 140, 126, 0.18);
@@ -447,8 +502,8 @@
 
 .scheme-stack {
   display: grid;
-  gap: 10px;
-  margin-top: 12px;
+  gap: 8px;
+  margin-top: 10px;
 }
 
 .law-reference {
@@ -494,7 +549,7 @@
 }
 
 .scheme-card {
-  padding: 13px;
+  padding: 12px;
   border-radius: 18px;
   background: linear-gradient(180deg, #fffefc, #f6fffb);
   border: 1px solid rgba(14, 93, 83, 0.09);
@@ -503,7 +558,8 @@
 
 .scheme-card.primary {
   border-color: rgba(29, 119, 106, 0.28);
-  box-shadow: 0 16px 28px rgba(18, 140, 126, 0.08);
+  box-shadow: 0 18px 30px rgba(18, 140, 126, 0.1);
+  transform: scale(1.01);
 }
 
 .scheme-head {
@@ -522,8 +578,8 @@
 .scheme-badge-icon {
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 12px;
   background: #edf8f3;
   color: #0f6e61;
@@ -533,7 +589,7 @@
 
 .scheme-head h3 {
   margin: 0 0 4px;
-  font-size: 1rem;
+  font-size: 0.98rem;
   line-height: 1.3;
 }
 
@@ -548,7 +604,7 @@
 }
 
 .scheme-section {
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 .scheme-section span {
@@ -565,8 +621,8 @@
 .scheme-details p {
   margin: 0;
   color: #24423c;
-  font-size: 0.88rem;
-  line-height: 1.5;
+  font-size: 0.85rem;
+  line-height: 1.45;
 }
 
 .scheme-details {
@@ -590,12 +646,12 @@
 .scheme-actions {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 14px;
+  gap: 6px;
+  margin-top: 12px;
 }
 
 .scheme-action {
-  min-height: 38px;
+  min-height: 36px;
   border-radius: 12px;
   border: 1px solid rgba(14, 93, 83, 0.12);
   background: #fff;
@@ -619,13 +675,55 @@
 
 @media (min-width: 768px) {
   .app-shell {
-    max-width: 900px;
+    max-width: 1080px;
     margin: 0 auto;
-    padding: 18px;
+    padding: 18px 24px 20px;
   }
 
   .chat-thread {
-    padding: 22px 18px 24px;
+    padding: 24px 22px 24px;
+  }
+
+  .bubble {
+    max-width: min(76%, 760px);
+    padding: 12px 14px 10px;
+  }
+
+  .message-text {
+    font-size: 0.97rem;
+    line-height: 1.55;
+  }
+
+  .quick-reply {
+    padding: 10px 14px;
+  }
+
+  .composer {
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  }
+
+  .composer textarea {
+    min-height: 46px;
+    max-height: 120px;
+    padding: 13px 15px;
+  }
+
+  .icon-btn,
+  .send-btn {
+    height: 46px;
+  }
+
+  .icon-btn {
+    width: 44px;
+    min-width: 44px;
+  }
+
+  .send-btn {
+    min-width: 74px;
+  }
+
+  .scheme-card.primary {
+    transform: scale(1.015);
   }
 }
 
@@ -649,7 +747,7 @@
   }
 
   .bubble {
-    max-width: 90%;
+    max-width: 88%;
   }
 
   .composer {
@@ -657,12 +755,12 @@
   }
 
   .icon-btn {
-    width: 40px;
-    min-width: 40px;
+    width: 38px;
+    min-width: 38px;
   }
 
   .send-btn {
-    min-width: 66px;
+    min-width: 60px;
   }
 
   .scheme-actions {
@@ -671,5 +769,10 @@
 
   .status-row {
     font-size: 0.72rem;
+  }
+
+  .voice-copy strong,
+  .voice-copy span {
+    font-size: 0.78rem;
   }
 }
